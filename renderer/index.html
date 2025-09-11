@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Batch Transaction Viewer</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="left">
+      <button id="openBtn" title="Open XML (Ctrl/Cmd+O)">📂 Open XML</button>
+      <input id="search" placeholder="Filter fields (e.g., BatchHeader.deviceId)" />
+    </div>
+    <div class="right">
+      <span id="fileName">Drop an XML file here or click Open</span>
+    </div>
+  </header>
+
+  <main class="split">
+    <aside id="tree" class="pane left" tabindex="0" aria-label="Fields tree"></aside>
+    <section id="details" class="pane right" aria-label="Node details">
+      <div class="placeholder">Select a field from the left to view details.</div>
+    </section>
+  </main>
+
+  <footer class="status">
+    <span>Tips: Drag & drop .xml • Click nodes to expand • Use search to filter</span>
+  </footer>
+
+  <script src="./renderer.js"></script>
+</body>
+</html>
