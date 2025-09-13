@@ -3,7 +3,7 @@ name: Release (tag)
 on:
   push:
     tags:
-      - 'v*'   # ตัวอย่าง: v1.2.3
+      - 'v*'   # ex: v0.0.4
 
 permissions:
   contents: write
@@ -36,7 +36,7 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      # แปลง tag -> version (ตัดตัวอักษร 'v' ด้านหน้าออก)
+      # ตัด 'v' ออก -> VERSION (เช่น v0.0.4 -> 0.0.4)
       - name: Derive version from tag
         id: version
         shell: bash
@@ -45,17 +45,33 @@ jobs:
           VERSION="${RAW#v}"
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "VERSION=$VERSION" >> $GITHUB_ENV
-          echo "Building version: $VERSION"
+          echo "Semver: $VERSION"
 
-      # สั่ง build โดย override version จาก tag (ไม่ publish)
+      # คำนวณ Windows FileVersion เป็นตัวเลข 4 ส่วน (เติม .0 ถ้าขาด)
+      - name: Compute 4-part Windows file version
+        id: winver
+        shell: bash
+        run: |
+          V="${{ steps.version.outputs.version }}"
+          # ตัด pre-release / build metadata ทิ้ง (เช่น 1.2.3-beta -> 1.2.3)
+          V="${V%%-*}"
+          IFS='.' read -r A B C D <<< "$V"
+          A="${A:-0}"; B="${B:-0}"; C="${C:-0}"; D="${D:-0}"
+          if [[ -z "$D" ]]; then D="0"; fi
+          FILEVER="$A.$B.$C.$D"
+          echo "filever=$FILEVER" >> $GITHUB_OUTPUT
+          echo "FILEVER=$FILEVER"
+      
+      # Build โดยกำหนด version/buildVersion อย่างถูกต้อง (ไม่มี 'v')
       - name: Build app (no publish)
-        shell: bash            # <<< บังคับใช้ bash ทุก OS (รวม windows-latest)
+        shell: bash
         env:
-          CSC_IDENTITY_AUTO_DISCOVERY: "false"
+          CSC_IDENTITY_AUTO_DISCOVERY: "false"   # ปิด auto codesign
         run: |
           npx electron-builder --publish never \
             -c.extraMetadata.version="${{ steps.version.outputs.version }}" \
-            -c.buildVersion="${{ github.ref_name }}"
+            -c.buildVersion="${{ steps.winver.outputs.filever }}" \
+            -c.win.fileVersion="${{ steps.winver.outputs.filever }}"
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
@@ -84,8 +100,8 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          name: ${{ github.ref_name }}                  # ชื่อรีลีส = tag
-          tag_name: ${{ github.ref_name }}              # ใช้ tag เดิม
+          name: ${{ github.ref_name }}
+          tag_name: ${{ github.ref_name }}
           draft: false
           prerelease: false
           files: dist/**/*

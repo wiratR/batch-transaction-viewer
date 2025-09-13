@@ -1,5 +1,6 @@
 {
   "name": "batch-transaction-viewer",
+  "author": "Wirat Rungjaroinsombut <wirat.r@sissolution.co.th>",
   "version": "1.0.0",
   "private": true,
   "description": "Split-pane batch transaction XML viewer with DenyList tab",
