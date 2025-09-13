@@ -3,7 +3,7 @@ name: Release (tag)
 on:
   push:
     tags:
-      - 'v*'   # ex: v0.0.6
+      - 'v*'   # ex: v0.0.8
 
 permissions:
   contents: write
@@ -34,121 +34,53 @@ jobs:
           cache: 'npm'
 
       - name: Install dependencies
-        run: npm ci
         shell: bash
+        run: npm ci
 
-      # ==== เวอร์ชันจาก tag ====
+      # ==== version from tag ====
       - name: Derive version from tag
         id: version
         shell: bash
         run: |
-          RAW="${GITHUB_REF_NAME}"     # ex: v0.0.6
-          VERSION="${RAW#v}"           # -> 0.0.6
+          RAW="${GITHUB_REF_NAME}"     # ex: v0.0.8
+          VERSION="${RAW#v}"           # -> 0.0.8
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
-          echo "VERSION=$VERSION" >> "$GITHUB_ENV"
           echo "Semver: $VERSION"
 
       - name: Compute 4-part Windows file version
         id: winver
         shell: bash
         run: |
-          V="${{ steps.version.outputs.version }}"   # 0.0.6[-prerelease]
-          V="${V%%-*}"                               # drop pre-release if any
+          V="${{ steps.version.outputs.version }}"   # 0.0.8[-prerelease]
+          V="${V%%-*}"
           IFS='.' read -r A B C D <<< "$V"
           A="${A:-0}"; B="${B:-0}"; C="${C:-0}"; D="${D:-0}"
           [[ -z "$D" ]] && D="0"
-          FILEVER="$A.$B.$C.$D"
-          echo "filever=$FILEVER" >> "$GITHUB_OUTPUT"
-          echo "FILEVER=$FILEVER"
+          echo "filever=$A.$B.$C.$D" >> "$GITHUB_OUTPUT"
 
-      # ==== เตรียมไอคอน (ถ้าไม่อยาก gen ใน CI ให้ commit build/icon.icns, build/icon.ico, build/icons/* แทนได้) ====
-      - name: Ensure build directories
-        shell: bash
-        run: |
-          mkdir -p build/icons
-          ls -la assets || true
+      # (เลือกได้) เตรียมไอคอนจาก assets/icon.png เหมือนเดิม …
 
-      # Linux icons (PNG หลายขนาด)
-      # Install ImageMagick (Linux)
-      - name: Install ImageMagick (Linux)
-        if: matrix.os == 'ubuntu-latest'
-        shell: bash
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y imagemagick
-
-      # Prepare icons (Linux)
-      - name: Prepare icons (Linux)
-        if: matrix.os == 'ubuntu-latest'
-        shell: bash
-        run: |
-          if [[ -f assets/icon.png ]]; then
-            # pick CLI: prefer 'magick' if exists, else fallback to 'convert'
-            if command -v magick >/dev/null 2>&1; then
-              IM_CMD="magick"
-            else
-              IM_CMD="convert"
-            fi
-            mkdir -p build/icons
-            for s in 16 32 48 64 128 256 512; do
-              "$IM_CMD" assets/icon.png -resize ${s}x${s} "build/icons/${s}x${s}.png"
-            done
-          else
-            echo "assets/icon.png not found; Linux will use default icon"
-          fi
-
-      # macOS .icns
-      - name: Prepare icons (macOS)
-        if: matrix.os == 'macos-latest'
-        shell: bash
-        run: |
-          if [[ -f assets/icon.png ]]; then
-            mkdir -p build/icon.iconset
-            SRC=assets/icon.png
-            for s in 16 32 128 256 512; do
-              sips -z $s $s "$SRC" --out "build/icon.iconset/icon_${s}x${s}.png" >/dev/null
-              s2=$((s*2))
-              sips -z $s2 $s2 "$SRC" --out "build/icon.iconset/icon_${s}x${s}@2x.png" >/dev/null
-            done
-            iconutil -c icns build/icon.iconset -o build/icon.icns
-            rm -rf build/icon.iconset
-          else
-            echo "assets/icon.png not found; macOS will use default icon"
-          fi
-
-      # Windows .ico
-      - name: Install ImageMagick (Windows)
-        if: matrix.os == 'windows-latest'
-        run: choco install imagemagick --no-progress -y
-        shell: powershell
-
-      - name: Prepare icons (Windows)
-        if: matrix.os == 'windows-latest'
-        shell: bash
-        run: |
-          if [[ -f assets/icon.png ]]; then
-            magick assets/icon.png -define icon:auto-resize=256,128,64,48,32,16 build/icon.ico
-          else
-            echo "assets/icon.png not found; Windows will use default icon"
-          fi
-
-      # ==== Build (ไม่มีบรรทัด '-' ลอย ๆ, ใช้ bash, ไม่มี \r) ====
       - name: Build app (no publish)
         shell: bash
         env:
-          CSC_IDENTITY_AUTO_DISCOVERY: "false"   # ปิด auto codesign บน macOS
+          CSC_IDENTITY_AUTO_DISCOVERY: "false"
         run: |
           npx electron-builder --publish never \
             -c.extraMetadata.version="${{ steps.version.outputs.version }}" \
             -c.buildVersion="${{ steps.winver.outputs.filever }}"
 
+      # ✅ Upload เฉพาะไฟล์ปลายทางเท่านั้น (ไม่เอา dist/** ทั้งโฟลเดอร์)
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
           name: ${{ runner.os }}-artifacts
-          if-no-files-found: error
+          if-no-files-found: ignore
           path: |
-            dist/**
+            dist/*.dmg
+            dist/*.zip
+            dist/*-win-*.exe
+            dist/*.AppImage
+            dist/*.blockmap
             dist/latest*.yml
 
   release:
@@ -166,6 +98,7 @@ jobs:
         shell: bash
         run: ls -R dist
 
+      # ✅ อัปเฉพาะไฟล์แพ็กเกจบน root ของ dist เท่านั้น
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
@@ -173,7 +106,15 @@ jobs:
           tag_name: ${{ github.ref_name }}
           draft: false
           prerelease: false
-          files: dist/**/*
+          files: |
+            dist/*.dmg
+            dist/*.zip
+            dist/*-win-*.exe
+            dist/*.AppImage
+            dist/*.blockmap
+            dist/latest*.yml
+          # ถ้าอยากกันงานล้มเมื่อบางแพลตฟอร์มไม่มีไฟล์ ให้เปิดบรรทัดนี้
+          fail_on_unmatched_files: false
           generate_release_notes: true
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
