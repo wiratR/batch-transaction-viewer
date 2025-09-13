@@ -1,33 +1,97 @@
 <!doctype html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Batch Transaction Viewer</title>
   <link rel="stylesheet" href="./styles.css" />
 </head>
+
 <body>
+  <!-- Top bar -->
   <header class="topbar">
-    <div class="left">
-      <button id="openBtn" title="Open XML (Ctrl/Cmd+O)">📂 Open XML</button>
-      <input id="search" placeholder="Filter fields (e.g., BatchHeader.deviceId)" />
-    </div>
+    <nav class="tabs">
+      <button id="tab-xml" class="tab active" title="Batch XML">Batch XML</button>
+      <button id="tab-deny" class="tab" title="DenyList">DenyList</button>
+    </nav>
     <div class="right">
-      <span id="fileName">Drop an XML file here or click Open</span>
+      <span id="fileName" class="filehint">Drop an XML file here or click Open</span>
     </div>
   </header>
 
-  <main class="split">
-    <aside id="tree" class="pane left" tabindex="0" aria-label="Fields tree"></aside>
-    <section id="details" class="pane right" aria-label="Node details">
-      <div class="placeholder">Select a field from the left to view details.</div>
-    </section>
-  </main>
+  <!-- Pages -->
+  <div id="pages" class="pages">
+    <!-- XML view -->
+    <main class="page" id="view-xml">
+      <div class="page-toolbar" id="xml-pagebar">
+        <button id="openBtn" title="Open XML (Ctrl/Cmd+O)">📂 Open XML</button>
+        <input id="search" placeholder="Filter fields (e.g., BatchHeader.deviceId)" />
+        <div class="spacer"></div>
+      </div>
+
+      <div class="split">
+        <aside class="pane left" aria-label="Fields">
+          <div id="tree" tabindex="0" aria-label="Fields tree"></div>
+        </aside>
+
+        <section id="details" class="pane right" aria-label="Node details">
+          <div class="placeholder">Select a field from the left to view details.</div>
+        </section>
+      </div>
+    </main>
+
+    <!-- DenyList view -->
+    <main class="page deny" id="view-deny" hidden>
+      <div class="page-toolbar">
+        <button id="openDenyBtn" title="Open DenyList (.bin/.zip) (Ctrl/Cmd+Shift+O)">📂 Open DenyList</button>
+        <input id="panSearch" placeholder="Search PAN (contains)" />
+
+        <!-- ✅ New filters -->
+        <select id="filterRemoved" title="Filter by Removed">
+          <option value="all">Removed: All</option>
+          <option value="true">true</option>
+          <option value="false">false</option>
+        </select>
+        <select id="filterReason" title="Filter by Reason">
+          <option value="all">All reasons</option>
+          <!-- will be populated dynamically -->
+        </select>
+
+        <button id="exportDenyJson">Export JSON</button>
+        <button id="exportDenyCsv">Export CSV</button>
+        <div class="spacer"></div>
+        <span id="denyFileName" class="filehint">No file opened</span>
+      </div>
+
+      <section class="deny-stats" id="denyStats"></section>
+
+      <section class="deny-table-wrap">
+        <table id="denyTable">
+          <colgroup>
+            <col class="col-pan" />
+            <col class="col-removed" />
+            <col class="col-reasons" />
+          </colgroup>
+          <thead>
+            <tr>
+              <th data-sort="pan" class="th-sort">PAN</th>
+              <th data-sort="removed" class="th-sort">Removed</th>
+              <th data-sort="reasons" class="th-sort">Reasons</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </section>
+    </main>
+  </div>
 
   <footer class="status">
-    <span>Tips: Drag & drop .xml • Click nodes to expand • Use search to filter</span>
+    <span>Tips: Drag & drop .xml • Click nodes to expand • Use search to filter • Ctrl/Cmd+Shift+O = Open
+      DenyList</span>
   </footer>
 
   <script src="./renderer.js"></script>
 </body>
+
 </html>

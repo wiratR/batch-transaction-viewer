@@ -1,13 +1,19 @@
 {
   "name": "batch-transaction-viewer",
-  "version": "1.0.1",
+  "version": "1.2.1",
   "private": true,
-  "description": "Split-pane batch transaction XML viewer (fields left, data right)",
+  "description": "Split-pane batch transaction XML viewer with DenyList tab",
   "main": "main.js",
   "scripts": {
+    "py:venv": "python3 -m venv python/.venv",
+    "py:deps": "python/.venv/bin/pip install -r python/requirements.txt",
+    "setup:python": "npm run py:venv && npm run py:deps",
     "start": "electron .",
     "pack": "electron-builder --dir",
-    "dist": "electron-builder"
+    "dist": "electron-builder",
+    "icons:icns": "mkdir -p build/icon.iconset && SRC=assets/icon.png && for s in 16 32 128 256 512; do sips -z $s $s $SRC --out build/icon.iconset/icon_${s}x${s}.png; s2=$((s*2)); sips -z $s2 $s2 $SRC --out build/icon.iconset/icon_${s}x${s}@2x.png; done && iconutil -c icns build/icon.iconset -o build/icon.icns",
+    "icons:ico": "magick assets/icon.png -define icon:auto-resize=256,128,64,48,32,16 build/icon.ico",
+    "icons:linux": "mkdir -p build/icons && for s in 16 32 48 64 128 256 512; do magick assets/icon.png -resize ${s}x${s} build/icons/${s}x${s}.png; done"
   },
   "dependencies": {},
   "devDependencies": {
@@ -17,22 +23,49 @@
   "build": {
     "appId": "com.example.batchtxnviewer",
     "productName": "Batch Transaction Viewer",
+    "directories": {
+      "buildResources": "build"
+    },
+    "asar": true,
+    "asarUnpack": [
+      "python/**"
+    ],
     "files": [
       "main.js",
       "preload.js",
       "renderer/**",
-      "assets/**"
+      "python/**",
+      "schema/**",
+      "package.json"
     ],
     "mac": {
-      "category": "public.app-category.utilities"
+      "category": "public.app-category.utilities",
+      "icon": "build/icon.icns",
+      "artifactName": "${productName}-${version}-mac.${ext}",
+      "target": [
+        "dmg",
+        "zip"
+      ]
     },
     "win": {
-      "target": "nsis"
+      "icon": "build/icon.ico",
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "artifactName": "${productName}-${version}-win-${arch}.${ext}"
     },
     "linux": {
+      "icon": "build/icons",
+      "category": "Utility",
       "target": [
         "AppImage"
-      ]
+      ],
+      "artifactName": "${productName}-${version}-linux-${arch}.${ext}"
     }
   }
 }
