@@ -49,8 +49,9 @@ jobs:
 
       # สั่ง build โดย override version จาก tag (ไม่ publish)
       - name: Build app (no publish)
+        shell: bash            # <<< บังคับใช้ bash ทุก OS (รวม windows-latest)
         env:
-          CSC_IDENTITY_AUTO_DISCOVERY: "false"   # ปิด codesign อัตโนมัติ เพื่อให้ build ผ่านใน CI
+          CSC_IDENTITY_AUTO_DISCOVERY: "false"
         run: |
           npx electron-builder --publish never \
             -c.extraMetadata.version="${{ steps.version.outputs.version }}" \
