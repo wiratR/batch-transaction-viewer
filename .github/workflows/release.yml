@@ -36,51 +36,42 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      # ตัด 'v' ออก -> VERSION (เช่น v0.0.4 -> 0.0.4)
       - name: Derive version from tag
         id: version
         shell: bash
         run: |
-          RAW="${GITHUB_REF_NAME}"
-          VERSION="${RAW#v}"
+          RAW="${GITHUB_REF_NAME}"       # ex: v0.0.4
+          VERSION="${RAW#v}"             # -> 0.0.4
           echo "version=$VERSION" >> $GITHUB_OUTPUT
-          echo "VERSION=$VERSION" >> $GITHUB_ENV
-          echo "Semver: $VERSION"
 
-      # คำนวณ Windows FileVersion เป็นตัวเลข 4 ส่วน (เติม .0 ถ้าขาด)
       - name: Compute 4-part Windows file version
         id: winver
         shell: bash
         run: |
-          V="${{ steps.version.outputs.version }}"
-          # ตัด pre-release / build metadata ทิ้ง (เช่น 1.2.3-beta -> 1.2.3)
-          V="${V%%-*}"
+          V="${{ steps.version.outputs.version }}"   # ex: 0.0.4[-prerelease]
+          V="${V%%-*}"                               # drop pre-release if any -> 0.0.4
           IFS='.' read -r A B C D <<< "$V"
           A="${A:-0}"; B="${B:-0}"; C="${C:-0}"; D="${D:-0}"
-          if [[ -z "$D" ]]; then D="0"; fi
-          FILEVER="$A.$B.$C.$D"
-          echo "filever=$FILEVER" >> $GITHUB_OUTPUT
-          echo "FILEVER=$FILEVER"
-      
-      # Build โดยกำหนด version/buildVersion อย่างถูกต้อง (ไม่มี 'v')
+          [[ -z "$D" ]] && D="0"
+          echo "filever=$A.$B.$C.$D" >> $GITHUB_OUTPUT
+
       - name: Build app (no publish)
         shell: bash
         env:
-          CSC_IDENTITY_AUTO_DISCOVERY: "false"   # ปิด auto codesign
+          CSC_IDENTITY_AUTO_DISCOVERY: "false"
         run: |
           npx electron-builder --publish never \
             -c.extraMetadata.version="${{ steps.version.outputs.version }}" \
-            -c.buildVersion="${{ steps.winver.outputs.filever }}" \
-            -c.win.fileVersion="${{ steps.winver.outputs.filever }}"
+            -c.buildVersion="${{ steps.winver.outputs.filever }}"
 
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: ${{ runner.os }}-artifacts
-          if-no-files-found: error
-          path: |
-            dist/**
-            dist/latest*.yml
+            - name: Upload build artifacts
+              uses: actions/upload-artifact@v4
+              with:
+                name: ${{ runner.os }}-artifacts
+                if-no-files-found: error
+                path: |
+                  dist/**
+                  dist/latest*.yml
 
   release:
     name: Create GitHub Release
