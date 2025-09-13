@@ -69,6 +69,7 @@ jobs:
           ls -la assets || true
 
       # Linux icons (PNG หลายขนาด)
+      # Install ImageMagick (Linux)
       - name: Install ImageMagick (Linux)
         if: matrix.os == 'ubuntu-latest'
         shell: bash
@@ -76,13 +77,21 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y imagemagick
 
+      # Prepare icons (Linux)
       - name: Prepare icons (Linux)
         if: matrix.os == 'ubuntu-latest'
         shell: bash
         run: |
           if [[ -f assets/icon.png ]]; then
+            # pick CLI: prefer 'magick' if exists, else fallback to 'convert'
+            if command -v magick >/dev/null 2>&1; then
+              IM_CMD="magick"
+            else
+              IM_CMD="convert"
+            fi
+            mkdir -p build/icons
             for s in 16 32 48 64 128 256 512; do
-              magick assets/icon.png -resize ${s}x${s} "build/icons/${s}x${s}.png"
+              "$IM_CMD" assets/icon.png -resize ${s}x${s} "build/icons/${s}x${s}.png"
             done
           else
             echo "assets/icon.png not found; Linux will use default icon"
