@@ -9,7 +9,7 @@
   --border: #1e2733;
   --gap: 12px;
   --radius: 12px;
-  --left-width: 280px;
+  --left-width: 500px;
   --topbar-h: 56px;
   --footer-h: 30px;
   --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
@@ -428,4 +428,112 @@ pre {
   #search {
     max-width: 100%
   }
+}
+
+/* มี error */
+.tree .node.has-error {
+  border-left: 3px solid #ff6b6b;
+  color: #ffb3b3;
+}
+
+/* ---- Validation styles ---- */
+button.node.error {
+  color: #c62828;
+  font-weight: 600;
+  position: relative;
+}
+
+button.node.error::before {
+  content: "●";
+  font-size: 10px;
+  line-height: 1;
+  position: absolute;
+  left: -12px;
+  top: 6px;
+}
+
+.card.error {
+  border-left: 4px solid #c62828;
+  background: #ffebee;
+}
+
+.card.error h3 {
+  color: #c62828;
+  margin: 0 0 6px 0;
+}
+
+.card.error ul {
+  margin: 0;
+  padding-left: 18px;
+}
+
+:root {
+  --topbar-h: 56px;
+  /* ความสูง header บนสุด */
+  --pagebar-h: 44px;
+  /* ความสูง toolbar ของแต่ละเพจ */
+  --footer-h: 24px;
+  /* ความสูง footer tips */
+}
+
+/* โครงหน้าหลัง header + footer: ไม่ให้สกรอลทั้งหน้าจอ */
+.pages {
+  height: calc(100vh - var(--topbar-h) - var(--footer-h));
+  overflow: hidden;
+  /* กันสกรอลภายนอก */
+}
+
+/* แต่ละเพจสูงเต็มพื้นที่ที่เหลือ */
+.page {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  /* สำคัญเพื่อให้ลูกสกรอลได้ */
+}
+
+/* แถบเครื่องมือด้านบนของเพจ */
+.page-toolbar {
+  flex: 0 0 var(--pagebar-h);
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  padding: .5rem .75rem;
+  border-bottom: 1px solid #e6e6e6;
+}
+
+/* พื้นที่ split สองฝั่ง: ให้ตัวมันเองไม่สกรอล แต่ปล่อยให้ลูกสกรอล */
+.split {
+  flex: 1 1 auto;
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  /* ซ้าย 280px ตามที่เคยขอ */
+  gap: 0;
+  min-height: 0;
+  /* สำคัญ */
+}
+
+/* ให้แต่ละ pane สกรอลของตัวเอง -> ขวาจะ “ค้างที่เดิม” */
+.pane {
+  min-height: 0;
+  /* สำคัญ */
+  overflow: auto;
+}
+
+/* เลย์เอาต์ต้นไม้ฝั่งซ้ายให้สกรอล */
+.pane.left {
+  border-right: 1px solid #eee;
+}
+
+/* ฝั่งขวา “ค้าง” อยู่ตลอด เพราะทั้งหน้าจอไม่สกรอล มีแต่ pane ขวาเองที่สกรอล */
+.pane.right {
+  background: #0d131d;
+  /* ถ้าอยากให้ขวา sticky แม้อยู่ในคอนเทนเนอร์ที่สกรอลเอง:
+     position: sticky; top: 0; height: 100%; overflow: auto; */
+}
+
+/* ไฮไลต์ปุ่ม node ที่ถูกเลือก */
+button.node.selected {
+  background: #1e2a3b;
+  outline: 1px solid #bcdcff;
 }

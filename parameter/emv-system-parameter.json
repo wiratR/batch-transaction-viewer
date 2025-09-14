@@ -1,0 +1,489 @@
+{
+  "global": {
+    "EMV-IN-TRANSIT-MODE": "EMV_PRODUCTION",
+    "MODE": "AuthorizationOnly",
+    "PG-LOCAL": 764,
+    "PG-CURRENCY": "THB",
+    "PG-GET-TOKEN-DELAY": 2,
+    "MERCHANT-IDENTIFICATION": "000001995010001",
+    "PSP-CUMULATIVE-LIMIT": 25,
+    "PTO-CUMULATIVE-LIMIT": 80,
+    "PTO-MAX-DUE-AGE": 0,
+    "DEBT-RECOVERY-DELAY": 60,
+    "MAX-CLEARING-AGE": 7,
+    "MAX-GRANTED-CO-EMV-DENIED": 0,
+    "PAYMENT-DATA-HISTORY": 13,
+    "TIME-SCALE": "DAYS",
+    "TAP-INITIATED-DEBT-RECOVERY-DELAY": 60,
+    "TAP-INITIATED-RISK-REASSESSMENT-DELAY": 1,
+    "MIN-EXPIRY-DATE-AGE": 1,
+    "AID-TO-PAYMENT-SCHEME-CORRESPONDENCE": [
+      {
+        "START-WITH": "A000000003",
+        "PAYMENT-SCHEME": "VISA"
+      },
+      {
+        "START-WITH": "A000000098",
+        "PAYMENT-SCHEME": "VISA"
+      },
+      {
+        "START-WITH": "A000000004",
+        "PAYMENT-SCHEME": "MASTERCARD"
+      },
+      {	  
+        "START-WITH": "A000000677",
+        "PAYMENT-SCHEME": "TBA"
+      },
+      {
+        "START-WITH": "A000000025",
+        "PAYMENT-SCHEME": "AMEX"
+      },
+            {
+        "START-WITH": "A000000333010102",
+        "PAYMENT-SCHEME": "UNIONPAY"
+      },
+      {
+        "START-WITH": "A000000333010103",
+        "PAYMENT-SCHEME": "UNIONPAY"
+      }
+    ],
+    "ANTI-PASSBACK-HISTORY": 300,
+    "CARD-RISK-REASSESSMENT-DELAY": 1
+},
+  "payment_scheme_dependent": [
+    {
+      "PAYMENT-SCHEME": "VISA",
+      "WORKFLOW": "LIABILITIES-FIRST",
+      "ALLOW-DEBT-RECOVERY-ON-HARD-DECLINE": true,
+      "PSP-MAX-AUTHORIZATION-AGE": 14,
+      "PTO-MAX-AUTHORIZATION-AGE": 1,
+      "PTO-CUMULATIVE-LIMIT": 400,
+      "DEBT-RESET-VALUE-FRR": true,
+      "PAYMENT-ERROR-RETRY-INTERVAL": "PT0S",
+      "PAYMENT-ERROR-RETRY-END": 0,
+      "CARD-TYPE": [
+        {
+          "type": "local",
+          "mode": "CREDIT",
+          "nominal-value": 0,
+          "max-psp-liability": 150,
+          "DEBT-RESET-VALUE": 0
+        },
+        {
+          "type": "local",
+          "mode": "DEBIT",
+          "nominal-value": 0,
+          "max-psp-liability": 150,
+          "DEBT-RESET-VALUE": 0
+        },
+        {
+          "type": "local",
+          "mode": "PREPAID",
+          "nominal-value": 0,
+          "max-psp-liability": 150,
+          "DEBT-RESET-VALUE": 0
+        },
+        {
+          "type": "local",
+          "mode": "OTHER",
+          "nominal-value": 0,
+          "max-psp-liability": 150,
+          "DEBT-RESET-VALUE": 0
+        },
+        {
+          "type": "foreign",
+          "mode": "CREDIT",
+          "nominal-value": 0,
+          "max-psp-liability": 0,
+          "DEBT-RESET-VALUE": 0
+        },
+        {
+          "type": "foreign",
+          "mode": "DEBIT",
+          "nominal-value": 0,
+          "max-psp-liability": 0,
+          "DEBT-RESET-VALUE": 0
+        },
+        {
+          "type": "foreign",
+          "mode": "PREPAID",
+          "nominal-value": 0,
+          "max-psp-liability": 0,
+          "DEBT-RESET-VALUE": 0
+        },
+        {
+          "type": "foreign",
+          "mode": "OTHER",
+          "nominal-value": 0,
+          "max-psp-liability": 0,
+          "DEBT-RESET-VALUE": 0
+        }
+      ],
+      "DEBT-RECOVERY-PLAN": [
+        {
+          "step": 1,
+          "daysSinceT0": 1
+        },
+        {
+          "step": 2,
+          "daysSinceT0": 3
+        },
+        {
+          "step": 3,
+          "daysSinceT0": 7
+        },
+        {
+          "step": 4,
+          "daysSinceT0": 14
+        }
+      ],
+      "AUTHORIZATION-RECOVERY-PLAN": [
+        {
+          "step": 1,
+          "daysSinceT0": 1
+        },
+        {
+          "step": 2,
+          "daysSinceT0": 3
+        },
+        {
+          "step": 3,
+          "daysSinceT0": 7
+        },
+        {
+          "step": 4,
+          "daysSinceT0": 14
+        }
+	  ]
+    },
+    {
+      "PAYMENT-SCHEME": "MASTERCARD",
+      "WORKFLOW": "LIABILITIES-LAST",
+      "ALLOW-DEBT-RECOVERY-ON-HARD-DECLINE": false,
+      "PSP-MAX-AUTHORIZATION-AGE": 14,
+      "PTO-MAX-AUTHORIZATION-AGE": 4,
+      "PTO-CUMULATIVE-LIMIT": 400,
+      "DEBT-RESET-VALUE-FRR": false,
+      "PAYMENT-ERROR-RETRY-INTERVAL": "PT0S",
+      "PAYMENT-ERROR-RETRY-END": 0,
+      "CARD-TYPE": [
+        {
+          "type": "local",
+          "mode": "CREDIT",
+          "nominal-value": 1,
+          "max-psp-liability": 150,
+          "DEBT-RESET-VALUE": 0
+        },
+        {
+          "type": "local",
+          "mode": "DEBIT",
+          "nominal-value": 1,
+          "max-psp-liability": 150,
+          "DEBT-RESET-VALUE": 0
+        },
+        {
+          "type": "local",
+          "mode": "PREPAID",
+          "nominal-value": 1,
+          "max-psp-liability": 150,
+          "DEBT-RESET-VALUE": 0
+        },
+        {
+          "type": "local",
+          "mode": "OTHER",
+          "nominal-value": 1,
+          "max-psp-liability": 150,
+          "DEBT-RESET-VALUE": 0
+        },
+        {
+          "type": "foreign",
+          "mode": "CREDIT",
+          "nominal-value": 1,
+          "max-psp-liability": 0,
+          "DEBT-RESET-VALUE": 0
+        },
+        {
+          "type": "foreign",
+          "mode": "DEBIT",
+          "nominal-value": 1,
+          "max-psp-liability": 0,
+          "DEBT-RESET-VALUE": 0
+        },
+        {
+          "type": "foreign",
+          "mode": "PREPAID",
+          "nominal-value": 1,
+          "max-psp-liability": 0,
+          "DEBT-RESET-VALUE": 0
+        },
+        {
+          "type": "foreign",
+          "mode": "OTHER",
+          "nominal-value": 1,
+          "max-psp-liability": 0,
+          "DEBT-RESET-VALUE": 0
+        }
+      ],
+      "DEBT-RECOVERY-PLAN": [
+        {
+          "step": 1,
+          "daysSinceT0": 1
+        },
+        {
+          "step": 2,
+          "daysSinceT0": 3
+        },
+        {
+          "step": 3,
+          "daysSinceT0": 7
+        },
+        {
+          "step": 4,
+          "daysSinceT0": 14
+        }
+      ],
+      "AUTHORIZATION-RECOVERY-PLAN": [
+        {
+          "step": 1,
+          "daysSinceT0": 1
+        },
+        {
+          "step": 2,
+          "daysSinceT0": 3
+        },
+        {
+          "step": 3,
+          "daysSinceT0": 7
+        },
+        {
+          "step": 4,
+          "daysSinceT0": 14
+        }
+	  ]
+    },
+    {
+      "PAYMENT-SCHEME": "TBA",
+      "WORKFLOW": "LIABILITIES-FIRST",
+      "ALLOW-DEBT-RECOVERY-ON-HARD-DECLINE": true,
+      "PSP-MAX-AUTHORIZATION-AGE": 14,
+      "PTO-MAX-AUTHORIZATION-AGE": 1,
+      "PTO-CUMULATIVE-LIMIT": 400,
+      "DEBT-RESET-VALUE-FRR": true,
+      "PAYMENT-ERROR-RETRY-INTERVAL": "PT0S",
+      "PAYMENT-ERROR-RETRY-END": 0,
+      "CARD-TYPE": [
+        {
+          "type": "local",
+          "mode": "CREDIT",
+          "nominal-value": 0,
+          "max-psp-liability": 150,
+          "DEBT-RESET-VALUE": 0
+        },
+        {
+          "type": "local",
+          "mode": "DEBIT",
+          "nominal-value": 0,
+          "max-psp-liability": 150,
+          "DEBT-RESET-VALUE": 0
+        },
+        {
+          "type": "local",
+          "mode": "PREPAID",
+          "nominal-value": 0,
+          "max-psp-liability": 150,
+          "DEBT-RESET-VALUE": 0
+        },
+        {
+          "type": "local",
+          "mode": "OTHER",
+          "nominal-value": 0,
+          "max-psp-liability": 150,
+          "DEBT-RESET-VALUE": 0
+        }
+      ],
+      "DEBT-RECOVERY-PLAN": [
+        {
+          "step": 1,
+          "daysSinceT0": 1
+        },
+        {
+          "step": 2,
+          "daysSinceT0": 3
+        },
+        {
+          "step": 3,
+          "daysSinceT0": 7
+        },
+        {
+          "step": 4,
+          "daysSinceT0": 14
+        }
+      ],
+      "AUTHORIZATION-RECOVERY-PLAN": [        
+	  {
+          "step": 1,
+          "daysSinceT0": 1
+        },
+        {
+          "step": 2,
+          "daysSinceT0": 3
+        },
+        {
+          "step": 3,
+          "daysSinceT0": 7
+        },
+        {
+          "step": 4,
+          "daysSinceT0": 14
+        }
+		]
+    },
+    {
+      "PAYMENT-SCHEME": "AMEX",
+      "WORKFLOW": "LIABILITIES-FIRST",
+      "ALLOW-DEBT-RECOVERY-ON-HARD-DECLINE": true,
+      "PSP-MAX-AUTHORIZATION-AGE": 14,
+      "PTO-MAX-AUTHORIZATION-AGE": 3,
+      "CARD-TYPE": [
+        {
+          "type": "local",
+          "mode": "DEBIT",
+          "nominal-value": 0,
+          "max-psp-liability": 0,
+          "DEBT-RESET-VALUE": 0
+        },
+        {
+          "type": "foreign",
+          "mode": "DEBIT",
+          "nominal-value": 1,
+          "max-psp-liability": 0,
+          "DEBT-RESET-VALUE": 0
+        }
+      ],
+      "DEBT-RECOVERY-PLAN": [
+        {
+          "step": 1,
+          "daysSinceT0": 1
+        },
+        {
+          "step": 2,
+          "daysSinceT0": 3
+        }
+      ],
+      "AUTHORIZATION-RECOVERY-PLAN": []
+    },
+    {
+      "PAYMENT-SCHEME": "UNIONPAY",
+      "WORKFLOW": "LIABILITIES-LAST",
+      "ALLOW-DEBT-RECOVERY-ON-HARD-DECLINE": false,
+      "PSP-MAX-AUTHORIZATION-AGE": 14,
+      "PTO-MAX-AUTHORIZATION-AGE": 4,
+      "PTO-CUMULATIVE-LIMIT": 400,
+      "DEBT-RESET-VALUE-FRR": false,
+      "PAYMENT-ERROR-RETRY-INTERVAL": "PT0S",
+      "PAYMENT-ERROR-RETRY-END": 0,
+      "CARD-TYPE": [
+        {
+          "type": "local",
+          "mode": "CREDIT",
+          "nominal-value": 1,
+          "max-psp-liability": 150,
+          "DEBT-RESET-VALUE": 1
+        },
+        {
+          "type": "local",
+          "mode": "DEBIT",
+          "nominal-value": 1,
+          "max-psp-liability": 150,
+          "DEBT-RESET-VALUE": 1
+        },
+        {
+          "type": "local",
+          "mode": "PREPAID",
+          "nominal-value": 1,
+          "max-psp-liability": 150,
+          "DEBT-RESET-VALUE": 1
+        },
+        {
+          "type": "local",
+          "mode": "OTHER",
+          "nominal-value": 1,
+          "max-psp-liability": 150,
+          "DEBT-RESET-VALUE": 1
+        },
+        {
+          "type": "foreign",
+          "mode": "CREDIT",
+          "nominal-value": 1,
+          "max-psp-liability": 0,
+          "DEBT-RESET-VALUE": 0
+        },
+        {
+          "type": "foreign",
+          "mode": "DEBIT",
+          "nominal-value": 1,
+          "max-psp-liability": 0,
+          "DEBT-RESET-VALUE": 0
+        },
+        {
+          "type": "foreign",
+          "mode": "PREPAID",
+          "nominal-value": 1,
+          "max-psp-liability": 0,
+          "DEBT-RESET-VALUE": 0
+        },
+        {
+          "type": "foreign",
+          "mode": "OTHER",
+          "nominal-value": 1,
+          "max-psp-liability": 0,
+          "DEBT-RESET-VALUE": 0
+        }
+      ],
+      "DEBT-RECOVERY-PLAN": [
+        {
+          "step": 1,
+          "daysSinceT0": 1
+        },
+        {
+          "step": 2,
+          "daysSinceT0": 3
+        },
+        {
+          "step": 3,
+          "daysSinceT0": 7
+        },
+        {
+          "step": 4,
+          "daysSinceT0": 14
+        }
+      ],
+      "AUTHORIZATION-RECOVERY-PLAN": [
+        {
+          "step": 1,
+          "daysSinceT0": 1
+        },
+        {
+          "step": 2,
+          "daysSinceT0": 3
+        },
+        {
+          "step": 3,
+          "daysSinceT0": 7
+        },
+        {
+          "step": 4,
+          "daysSinceT0": 14
+        }
+	  ]
+    }
+  ],
+  "monitoring": {
+    "DerivationKSNWarningThreshold": 800000,
+    "DerivationKSNAlarmThreshold": 1000000,
+    "UnsentPaymentDataWarningThreshold": 20,
+    "UnsentPaymentDataAlarmThreshold": 990,
+    "NoCommunicationWithPaymentGatewayDelayThreshold": 120,
+    "NoCommunicationWithBackOfficeDelayThreshold": 60
+  }
+}

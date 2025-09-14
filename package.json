@@ -39,6 +39,12 @@
       "schema/**",
       "package.json"
     ],
+    "extraResources": [
+      {
+        "from": "config/default.json",
+        "to": "config.json"
+      }
+    ],
     "mac": {
       "category": "public.app-category.utilities",
       "icon": "build/icon.icns",

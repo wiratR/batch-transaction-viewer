@@ -1,0 +1,17 @@
+{
+    "window": {
+        "fullscreen": false,
+        "width": 1200,
+        "height": 800,
+        "kiosk": false
+    },
+    "api": {
+        "baseUrl": "https://your-api.example.com"
+    },
+    "auth": {
+        "enabled": false, // ← เปิด/ปิด auto-login ที่นี่
+        "username": "410113",
+        "password": "410113",
+        "realm": "device"
+    }
+}

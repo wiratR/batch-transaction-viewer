@@ -1,3 +1,10 @@
+// renderer/renderer.js  (ES module)
+import {
+  collectValidationErrors,
+  decorateTreeWithErrors,
+  errorCard,
+} from './validation.js';
+
 document.addEventListener('DOMContentLoaded', () => {
   // ===== Elements (XML) =====
   const openBtn    = document.getElementById('openBtn');
@@ -7,9 +14,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const fileNameEl = document.getElementById('fileName');
 
   // ===== Tabs / Pages =====
-  const tabXml = document.getElementById('tab-xml');
-  const tabDeny = document.getElementById('tab-deny');
-  const viewXml = document.getElementById('view-xml');
+  const tabXml   = document.getElementById('tab-xml');
+  const tabDeny  = document.getElementById('tab-deny');
+  const viewXml  = document.getElementById('view-xml');
   const viewDeny = document.getElementById('view-deny');
 
   function activateTab(which) {
@@ -41,6 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ===== State =====
   let currentDoc = null;
+  let validationErrors = new Map(); // Map<path, string[]>
   let denyModel = null;             // { entries: [], reasons: {} }
   let denySort  = { key: null, dir: 'asc' }; // 'pan' | 'removed' | 'reasons'
 
@@ -110,6 +118,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // ===== Clear helpers =====
   function clearXmlView() {
     currentDoc = null;
+    validationErrors = new Map();
     treeEl.innerHTML = '';
     detailsEl.innerHTML = '<div class="placeholder">Select a field from the left to view details.</div>';
     if (search) search.value = '';
@@ -144,7 +153,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const p = pathFor(el);
     toggle.textContent = p || label;
     toggle.title = label;
-    toggle.onclick = () => showDetails(el);
+    toggle.onclick = () => {
+      // ลบ selected เดิม
+      document.querySelectorAll('button.node.selected').forEach(b => b.classList.remove('selected'));
+      // set ตัวที่คลิก
+      toggle.classList.add('selected');
+      // แสดงรายละเอียด
+      showDetails(el);
+    };
     li.appendChild(toggle);
 
     const childrenEls = Array.from(el.children || []);
@@ -163,9 +179,17 @@ document.addEventListener('DOMContentLoaded', () => {
     header.innerHTML = `<h2>${el.nodeName}</h2><code class="path">${pathFor(el)}</code>`;
     detailsEl.appendChild(header);
 
+    // Validation errors (ถ้ามี)
+    const p = pathFor(el);
+    if (validationErrors.has(p)) {
+      detailsEl.appendChild(errorCard(validationErrors.get(p)));
+    }
+
+    // Attributes
     const attrs = el.getAttributeNames();
     if (attrs.length) detailsEl.appendChild(kvTable('Attributes', attrs.map(a => [a, el.getAttribute(a)])));
 
+    // Children preview
     const rows = [];
     for (const child of el.children) {
       const key = child.nodeName.replace(/^.*:/, '');
@@ -174,11 +198,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     if (rows.length) detailsEl.appendChild(kvTable('Children', rows));
 
+    // Leaf value
     if (!el.children.length) {
       const val = (el.textContent || '').trim();
       if (val) detailsEl.appendChild(codeBlock('Value', val));
     }
 
+    // EMV helper
     if (/emvTag$/i.test(el.nodeName) || el.closest('emvTags')) {
       const name = el.querySelector(':scope > name')?.textContent?.trim();
       const val = el.querySelector(':scope > value')?.textContent?.trim();
@@ -254,12 +280,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const reasonsMap = denyModel.reasons || {};
 
     // filters
-    const q = (panSearch?.value || '').trim().toLowerCase();
+    const q   = (panSearch?.value || '').trim().toLowerCase();
     const rem = (filterRemoved?.value || 'all').toLowerCase();
     const rea = (filterReason?.value  || 'all');
 
     let rows = all;
-    if (q) rows = rows.filter(e => (e.pan || '').toLowerCase().includes(q));
+    if (q)           rows = rows.filter(e => (e.pan || '').toLowerCase().includes(q));
     if (rem !== 'all') rows = rows.filter(e => String(e.removed) === rem);
     if (rea !== 'all') rows = rows.filter(e => (e.reason_labels_arr || []).includes(rea));
 
@@ -313,7 +339,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
-    // sort arrows
+    // sort arrows (แสดงบน thead)
     const ths = document.querySelectorAll('#denyTable thead th.th-sort');
     ths.forEach(th => {
       th.classList.remove('sort-asc','sort-desc');
@@ -354,12 +380,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const result = await window.api.openDialog();
     if (!result) return;
     const { filePath, xml } = result;
-    fileNameEl.textContent = filePath;
+    if (fileNameEl) fileNameEl.textContent = filePath;
 
     if (isXmlPath(filePath)) {
       try {
         currentDoc = parseXml(xml);
         buildTree(currentDoc);
+
+        // Validation -> ตกแต่ง tree
+        validationErrors = collectValidationErrors(currentDoc, pathFor);
+        decorateTreeWithErrors(treeEl, validationErrors);
+
         detailsEl.innerHTML = '<div class="placeholder">Select a field from the left to view details.</div>';
         activateTab('xml');
         clearDenyView();
@@ -396,10 +427,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const p = file.path;
     if (isXmlPath(p)) {
       const { filePath, xml } = await window.api.readDropped(p);
-      fileNameEl.textContent = filePath;
+      if (fileNameEl) fileNameEl.textContent = filePath;
       try {
         currentDoc = parseXml(xml);
         buildTree(currentDoc);
+
+        validationErrors = collectValidationErrors(currentDoc, pathFor);
+        decorateTreeWithErrors(treeEl, validationErrors);
+
         detailsEl.innerHTML = '<div class="placeholder">Select a field from the left to view details.</div>';
         activateTab('xml');
         clearDenyView();
