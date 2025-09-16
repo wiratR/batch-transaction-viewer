@@ -33,17 +33,45 @@ jobs:
           node-version: 20
           cache: 'npm'
 
-      - name: Install dependencies
+      - name: Install Node deps
         shell: bash
         run: npm ci
 
-      # ==== version from tag ====
+      # ===== Python for bundling denylist_reader (no Python needed on end-user) =====
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install Python deps
+        shell: bash
+        run: |
+          if [[ -f python/requirements.txt ]]; then
+            python -m pip install -r python/requirements.txt
+          else
+            python -m pip install pyinstaller flatbuffers
+          fi
+
+      - name: Build denylist_reader binary (PyInstaller)
+        shell: bash
+        run: |
+          pyinstaller -F python/denylist_reader.py -n denylist_reader
+          mkdir -p python/bin
+          if [[ "$RUNNER_OS" == "Windows" ]]; then
+            mv dist/denylist_reader.exe python/bin/denylist_reader.exe
+          else
+            mv dist/denylist_reader python/bin/denylist_reader
+            chmod +x python/bin/denylist_reader
+          fi
+
+      # ===== Version from tag =====
       - name: Derive version from tag
         id: version
         shell: bash
         run: |
-          RAW="${GITHUB_REF_NAME}"     # ex: v0.0.8
-          VERSION="${RAW#v}"           # -> 0.0.8
+          RAW="${GITHUB_REF_NAME}"         # ex: v0.0.8
+          VERSION="${RAW#v}"               # -> 0.0.8
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
           echo "Semver: $VERSION"
 
@@ -51,15 +79,14 @@ jobs:
         id: winver
         shell: bash
         run: |
-          V="${{ steps.version.outputs.version }}"   # 0.0.8[-prerelease]
+          V="${{ steps.version.outputs.version }}"
           V="${V%%-*}"
           IFS='.' read -r A B C D <<< "$V"
           A="${A:-0}"; B="${B:-0}"; C="${C:-0}"; D="${D:-0}"
           [[ -z "$D" ]] && D="0"
           echo "filever=$A.$B.$C.$D" >> "$GITHUB_OUTPUT"
 
-      # (เลือกได้) เตรียมไอคอนจาก assets/icon.png เหมือนเดิม …
-
+      # (ถ้าไม่มีไอคอนใน repo ก็ปล่อยให้ใช้ default ได้)
       - name: Build app (no publish)
         shell: bash
         env:
@@ -69,7 +96,6 @@ jobs:
             -c.extraMetadata.version="${{ steps.version.outputs.version }}" \
             -c.buildVersion="${{ steps.winver.outputs.filever }}"
 
-      # ✅ Upload เฉพาะไฟล์ปลายทางเท่านั้น (ไม่เอา dist/** ทั้งโฟลเดอร์)
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -94,11 +120,10 @@ jobs:
           path: dist
           merge-multiple: true
 
-      - name: List downloaded files (debug)
+      - name: List files (debug)
         shell: bash
         run: ls -R dist
 
-      # ✅ อัปเฉพาะไฟล์แพ็กเกจบน root ของ dist เท่านั้น
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
@@ -113,7 +138,6 @@ jobs:
             dist/*.AppImage
             dist/*.blockmap
             dist/latest*.yml
-          # ถ้าอยากกันงานล้มเมื่อบางแพลตฟอร์มไม่มีไฟล์ ให้เปิดบรรทัดนี้
           fail_on_unmatched_files: false
           generate_release_notes: true
         env:

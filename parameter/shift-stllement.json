@@ -1,0 +1,40 @@
+{
+    "header": {
+        "generationDate": "2025-09-14T10:22:56.752589134+07:00",
+        "transactionStatus": "COMPLETE"
+    },
+    "boMessageHeader": {
+        "boTransactionUID": "d69eb621-2f8f-4a48-8795-ba171f58f4cf"
+    },
+    "shiftStatement": {
+        "deviceNumber": "00086",
+        "shiftNumber": "869",
+        "startDate": "2025-09-12T19:00:08Z",
+        "endDate": "2025-09-13T18:59:59Z",
+        "businessEntityId": "4",
+        "farePointId": 22,
+        "printed": false,
+        "usageStatement": {
+            "mediaUsageStatementList": {
+                "mediaUsageStatements": [
+                    {
+                        "mediaTypeId": 3,
+                        "mediaCheckInNumber": 0,
+                        "mediaCheckOutNumber": 0
+                    }
+                ]
+            }
+        },
+        "automaticMediaManagementStatement": {
+            "mediaDenyProcessList": {
+                "mediaDenyProcessings": [
+                    {
+                        "mediaTypeId": 3,
+                        "number": 0
+                    }
+                ]
+            }
+        },
+        "additionalFields": "{\"APBCICnt\":0,\"APBCOCnt\":0,\"APBCnt\":0,\"dailyTxnBatchNumber\":0,\"overranValidations\":{\"expiredCheckInNumber\":0,\"expiredCheckOutNumber\":0,\"expiredDenyNumber\":0},\"shiftDailySequenceNumber\":1,\"sumAPBCICnt\":0,\"sumAPBCOCnt\":0,\"sumAPBCnt\":0}"
+    }
+}

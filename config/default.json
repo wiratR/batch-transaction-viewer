@@ -6,10 +6,10 @@
         "kiosk": false
     },
     "api": {
-        "baseUrl": "https://your-api.example.com"
+        "baseUrl": "https://services-test.mangmoomemv.com",
     },
     "auth": {
-        "enabled": false, // ← เปิด/ปิด auto-login ที่นี่
+        "enabled": false,
         "username": "410113",
         "password": "410113",
         "realm": "device"

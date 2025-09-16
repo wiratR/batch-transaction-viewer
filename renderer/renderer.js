@@ -285,7 +285,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const rea = (filterReason?.value  || 'all');
 
     let rows = all;
-    if (q)           rows = rows.filter(e => (e.pan || '').toLowerCase().includes(q));
+    if (q)             rows = rows.filter(e => (e.pan || '').toLowerCase().includes(q));
     if (rem !== 'all') rows = rows.filter(e => String(e.removed) === rem);
     if (rea !== 'all') rows = rows.filter(e => (e.reason_labels_arr || []).includes(rea));
 
@@ -339,7 +339,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
-    // sort arrows (แสดงบน thead)
+    // sort arrows
     const ths = document.querySelectorAll('#denyTable thead th.th-sort');
     ths.forEach(th => {
       th.classList.remove('sort-asc','sort-desc');
@@ -476,7 +476,29 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   })();
 
-  // Default
+  // ====== SHOW CONFIG LOGS / PATHS IN CONSOLE ======
+  // 1) รับ startup logs จาก main
+  window.api?.onStartupLogs?.((logs) => {
+    try {
+      console.groupCollapsed('%c[Startup Logs from main]', 'color:#2b6cb0;font-weight:bold');
+      logs.forEach(l => console.log(l));
+      console.groupEnd();
+    } catch {}
+  });
+
+  // 2) รับ log runtime จาก main
+  window.api?.onMainLog?.((msg) => {
+    console.log(msg);
+  });
+
+  // 3) ขอ path ต่าง ๆ แล้วแสดงเป็นตาราง
+  window.api?.getConfigPaths?.().then(paths => {
+    console.groupCollapsed('%c[Config Paths]', 'color:#2f855a;font-weight:bold');
+    console.table(paths);
+    console.groupEnd();
+  }).catch(()=>{});
+
+  // Default page
   activateTab('xml');
   clearDenyView();
 });

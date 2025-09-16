@@ -1,0 +1,73 @@
+{
+   "access_token": "eyJ6aXAiOiJERUYiLCJlbmMiOiJBMTI4Q0JDLUhTMjU2IiwiYWxnIjoiZGlyIn0..cfoyY8bKaFrgBycxWsYdLQ.PkW0vObAGMgh2OPPyL5oNc5V7v9wBaNnE6JbTF_GXxAWGtyQzWWUyt4BeYVYx89AnfNFJRqHodLanYvLwDBk-e-2b8ycU_-PVnHW_hE7uLMwp0dvIj41tx5xLc9PC_lJ0sutNdlwPs_4WkqDj0owj4otLWivPNhfI-WuWLayGYBl_jDoNxPR8_VpMNpS2Nld3u6CwOddujBj9HkEQffMguCL7jG0WFZOJXMW7S7STAE3o9nz9WG_G0wKsxeDJDKqTSMtrsZdFzUmv4pthBnSQzmRjyL5cB1GYBXiTlfKGVAcUmx35-zqMEAYx4b4IQ1TTzD3mnTRWghEo5z4_2wMzw1xVBLycX6O4AV3R88K0iy_wXWURMcSZscyOsdLcJRh3VSHo-X2YvpZjJexVDHRHLYis0mmSpEC47Qh1gDRtRT71t9XE-EpGmuAhnKc_RZoKwBey4F-WfZ2aKaLBkazb-nksTLfrz1lNRfppGShGSfkifnMgMgWA0Xk8zhUz-1V4c0eexUDHkjcWO1-aGDpq3Z434NEFDgsGqjuA4ddVePgwsYOk_EMf8WHC32lWHHdxWoSdaH0vSVbEt-wUHMKt3ptDFWS6wvNnWJSvz61yCZ1k8gZI3fVXH88zFPTFOmIBRf5a9sD6xkveT2Xaxhpr4S7VSOK6GuMQS-UbATs2gQGf8ISBOnOjyPcFS4NArUEdCq7xyg_pmFUg9Rtpb9ZRPivLx3bEtW2-IWsvmcIOkZ2L4wp77Hg_rwmbMKh_3ahJUPQuuEQCGg5AhGQs03KPPClW5TyOxQ_TdyOCIGiDYBt8gGklgxgmOrKGWE47ICVis4ScJ4PH7p4XP0RCaONGrPwNAAiwBslfZ7I8iM6fYMIiOV0RH63EakR5zqrbsPXlNdKl9JTFuNMs6cn-VrhhQPemG_8k9LfnIt5UX1F4O8J7YLsX2YqTEBsOaTdvay_i3CxmLSHwFJYpzWJBlUDcC_mTBowZzGMZ_RBbIW_DyP3tf25jS7Z3ZJYN5jWVWaCPub18HFd2WAKlazwvcaVJH4Qh_4joF1AcpxNGCy3El8.gcCfpODqbph3SkmsrmaDLQ",
+    "token_type": "Bearer",
+    "expires_in": 300,
+    "issued_at": "2025-09-14T10:40:44.13727226+07:00",
+    "client_id": "831849af-a730-4378-b0bf-e228de273205",
+    "redirect_uri": "https://services-test.mangmoomemv.com/dem/devices/831849af-a730-4378-b0bf-e228de273205",
+    "refresh_token": "eyJ6aXAiOiJERUYiLCJlbmMiOiJBMTI4Q0JDLUhTMjU2IiwiYWxnIjoiZGlyIn0..l_n-RJJlOra5vKIacAKS1Q.geRNVaGsDuZC5p6OTmRkGkmygkhoRKafBTrQFDC10cH6i-lE7AO4aja5eFcd1gCpsQr_BRBzARbX03OeHoXwa9iF6Ic2U_2pZYgjgy_xM8KbJXq7ua8qtGqWEX0fqTS2rpRHmkmdE7t8KWw_G62lgUCcdQo6OUfe9jterP8AV24M6wXTkKFvyce-TpxkLZcTjLa6Ys7b-XCUweCASuqXDjUu1DMuaDuNn7Am3QPryVBo1_Z9_BizZUmjis9NVQfho5dDgZ1n3jSBa298GKPc0I9h7oG_3hRCOVsOZNSRm1-PrTFI_WMOWrE4yZFFyIZdTNuJXVK9ErIk94Z5Mg8qCF2ItOXO4LfY7Kqz4vAR2vHveGcgliX1bDwyfUSEHh3Vpdc10kVZHdeRXccA6JkPndRhSA1RfVN-1MRXiJY3DLKip5marYOhNuqFrzXOhPbzLcPpBHJcsFu_uWLRgqRGo7DRM20AZvzeG60obypg7tKLsckt7zymUOgIU_S1bw-ooNn5VIEpWShrf7fWeX2SnGmXyZbqFglEsT2SubvZEdEjoXhZhIyQ3vuEjFoPaT6VQ-vMj8js88863afxAqrPbLAPWGuYYxEoril7yYuRPhDwMuv6k0wgc2exmhCJ_x3HLQgQSfy8g4gyls2sQdgbFydefxkqOpVrUeD4ce34FG_V-TXfZpcvutKKm3ePrUE-qvpkLwgbSC8XDy2g69jvYw.i2tzS5hSVSBalIfi2n_5pQ",
+    "refresh_token_expires_in": 2147483647,
+    "session_id": "3e318d34-e729-42d7-8722-7b8043159eec",
+    "api_version": "25.5.0",
+    "failed_attempts": 0,
+    "last_login_date": "2025-09-14T10:40:25.238820876+07:00",
+    "_links": {
+        "dem:device.get": {
+            "href": "https://services-test.mangmoomemv.com/dem/devices/831849af-a730-4378-b0bf-e228de273205"
+        },
+        "self": {
+            "href": "https://services-test.mangmoomemv.com/acm/login"
+        },
+        "acm:login.token.get": {
+            "href": "https://services-test.mangmoomemv.com/acm/token"
+        },
+        "bxv:ticketing.validation": {
+            "href": "http://transcity_bxv:5000/bxv/xmlValidation/ticketingParameters"
+        },
+        "cdm:agentProfiles.get": {
+            "href": "https://services-test.mangmoomemv.com/cdm/agentProfiles"
+        },
+        "cdm:businessEntities.get": {
+            "href": "https://services-test.mangmoomemv.com/cdm/businessEntities{?relation}",
+            "templated": true
+        },
+        "cysl:acceptlist.get": {
+            "href": "https://services-test.mangmoomemv.com/cysl/acceptList{?keySaltVersion,merchantId}",
+            "templated": true
+        },
+        "cysl:denylist.flatbuffer.get": {
+            "href": "https://services-test.mangmoomemv.com/cysl/denyLists/flatBuffers/{denyListId}{?keySaltVersion,merchantId}",
+            "templated": true
+        },
+        "cysl:denylist.get": {
+            "href": "https://services-test.mangmoomemv.com/cysl/denyLists/{denyListId}{?keySaltVersion,merchantId}",
+            "templated": true
+        },
+        "daq:device.transactions.batch.post": {
+            "href": "https://services-test.mangmoomemv.com/daq/devices/transactions/batch"
+        },
+        "mam:media.access.post": {
+            "href": "https://services-test.mangmoomemv.com/mam/medias/access{?mediaGraphicalNumber,mediaSerialNumber,mediaTypeId}",
+            "templated": true
+        },
+        "mam:media.validation.post": {
+            "href": "https://services-test.mangmoomemv.com/mam/medias/validation{?dryRun,partialResponse}",
+            "templated": true
+        },
+        "mam:qrCode.validation.post": {
+            "href": "https://services-test.mangmoomemv.com/mam/medias/qr/validation{?dryRun,partialResponse}",
+            "templated": true
+        },
+        "scm:statements.post": {
+            "href": "https://services-test.mangmoomemv.com/scm/statements"
+        },
+        "stf:agent.token.get": {
+            "href": "https://services-test.mangmoomemv.com/stf/agents/token/{mediaGraphicalNumber}/type/{mediaTypeId}",
+            "templated": true
+        },
+        "stf:agents.get": {
+            "href": "https://services-test.mangmoomemv.com/stf/agents{?agentNumber,businessEntities,firstName,lastName,looseComparison,page,size,sort}",
+            "templated": true
+        }
+    }
+}

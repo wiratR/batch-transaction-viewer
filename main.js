@@ -26,6 +26,25 @@ const authState = {
 };
 
 // ------------------------------
+// Logging to renderer (for config visibility)
+// ------------------------------
+const startupLogs = [];
+function sendToRenderer(channel, payload) {
+  try { win?.webContents?.send(channel, payload); } catch {}
+}
+function logCfg(...args) {
+  const msg = ['[config]', ...args].join(' ');
+  console.log(msg);
+  startupLogs.push(msg);
+  sendToRenderer('app:log', msg);
+}
+function logMain(...args) {
+  const msg = ['[main]', ...args].join(' ');
+  console.log(msg);
+  sendToRenderer('app:log', msg);
+}
+
+// ------------------------------
 // Helpers: Paths (dev vs packaged)
 // ------------------------------
 function getAppBase() {
@@ -52,20 +71,31 @@ function resolveDefaultConfigPath() {
     path.join(__dirname, 'config', 'config.json'),
     app.isPackaged ? path.join(process.resourcesPath, 'config.json') : null, // from extraResources
   ].filter(Boolean);
+
+  logCfg('default candidates =', candidates.map(p => `"${p}"`).join(' | '));
+
   for (const p of candidates) {
-    if (fsSync.existsSync(p)) return p;
+    if (fsSync.existsSync(p)) {
+      logCfg('use default =', p);
+      return p;
+    }
   }
+  logCfg('no default config found');
   return null;
 }
 
 function getUserConfigPath() {
-  return path.join(app.getPath('userData'), CONFIG_NAME);
+  const p = path.join(app.getPath('userData'), CONFIG_NAME);
+  logCfg('userData =', app.getPath('userData'));
+  logCfg('user config path =', p);
+  return p;
 }
 
 async function ensureUserConfig() {
   const userPath = getUserConfigPath();
   try {
     await fs.access(userPath); // exists
+    logCfg('user config exists ->', userPath);
     return userPath;
   } catch {
     try {
@@ -75,11 +105,13 @@ async function ensureUserConfig() {
         : Buffer.from(JSON.stringify(DEFAULT_FALLBACK, null, 2), 'utf8');
       await fs.mkdir(path.dirname(userPath), { recursive: true });
       await fs.writeFile(userPath, payload);
+      logCfg(defPath ? 'seed from default ->' : 'seed with fallback JSON ->', userPath);
       return userPath;
     } catch (e) {
-      console.warn('ensureUserConfig():', e?.message || e);
+      logCfg('ensureUserConfig() error:', e?.message || e);
       await fs.mkdir(path.dirname(userPath), { recursive: true }).catch(() => {});
       await fs.writeFile(userPath, JSON.stringify(DEFAULT_FALLBACK, null, 2), 'utf8').catch(() => {});
+      logCfg('forced write fallback JSON ->', userPath);
       return userPath;
     }
   }
@@ -89,6 +121,7 @@ async function loadConfig() {
   try {
     const userPath = await ensureUserConfig();
     const txt = await fs.readFile(userPath, 'utf8');
+    logCfg('load config from ->', userPath, `(size=${txt.length})`);
     const cfg = JSON.parse(txt);
     return {
       ...DEFAULT_FALLBACK,
@@ -98,7 +131,7 @@ async function loadConfig() {
       auth: { ...DEFAULT_FALLBACK.auth, ...(cfg.auth || {}) },
     };
   } catch (e) {
-    console.warn('loadConfig(): using fallback –', e?.message || e);
+    logCfg('loadConfig(): using fallback –', e?.message || e);
     return DEFAULT_FALLBACK;
   }
 }
@@ -120,6 +153,7 @@ function scheduleRefresh(ms, cfg, loginFn) {
   authState._refreshTimer = setTimeout(() => {
     loginFn(cfg).catch(err => {
       console.warn('[auth] auto refresh failed:', err?.message || err);
+      logMain('auth auto refresh failed:', err?.message || err);
     });
   }, delay);
 }
@@ -149,7 +183,7 @@ async function acmLogin(cfg) {
   });
 
   if (!res.ok) {
-    const text = await res.text().catch(()=>'');
+    const text = await res.text().catch(()=> '');
     throw new Error(`Login failed ${res.status} ${res.statusText}: ${text.slice(0, 400)}`);
   }
 
@@ -169,7 +203,8 @@ async function acmLogin(cfg) {
 
   if (expiresIn > 0) scheduleRefresh(expiresIn * 1000, cfg, acmLogin);
 
-  win?.webContents.send('auth:login-ok', { tokenType, accessToken, expiresAt });
+  sendToRenderer('auth:login-ok', { tokenType, accessToken, expiresAt });
+  logMain('login ok; expiresIn(s)=', expiresIn);
   return data;
 }
 
@@ -197,14 +232,21 @@ async function createWin() {
   if (cfg.auth?.enabled) {
     acmLogin(cfg).catch(err => {
       console.warn('[login] failed:', err?.message || err);
-      win?.webContents.send('auth:login-error', { message: String(err?.message || err) });
+      logMain('login failed:', err?.message || err);
+      sendToRenderer('auth:login-error', { message: String(err?.message || err) });
     });
   } else {
     clearAuth();
-    win?.webContents.send('auth:login-disabled');
+    sendToRenderer('auth:login-disabled');
+    logMain('auth disabled by config');
   }
 
   win.loadFile(path.join(__dirname, 'renderer', 'index.html'));
+
+  // ส่ง startup logs ให้ renderer เมื่อหน้าโหลดเสร็จ
+  win.webContents.on('did-finish-load', () => {
+    sendToRenderer('app:startup-logs', startupLogs);
+  });
 }
 
 app.whenReady().then(createWin);
@@ -260,17 +302,32 @@ ipcMain.handle('app:reload-config', async () => {
     if (!authState.token) {
       acmLogin(cfg).catch(err => {
         console.warn('[login] failed (reload):', err?.message || err);
-        win?.webContents.send('auth:login-error', { message: String(err?.message || err) });
+        logMain('login failed (reload):', err?.message || err);
+        sendToRenderer('auth:login-error', { message: String(err?.message || err) });
       });
     }
   } else {
     if (authState.token) {
       clearAuth();
-      win?.webContents.send('auth:login-disabled');
+      sendToRenderer('auth:login-disabled');
+      logMain('auth disabled (reload)');
     }
   }
 
   return cfg;
+});
+
+// ให้ renderer ขอ path ได้ (แสดงใน DevTools)
+ipcMain.handle('config:get-paths', async () => {
+  const defaultPath = resolveDefaultConfigPath(); // จะ log เพิ่ม—โอเค
+  const userPath = getUserConfigPath();
+  return {
+    defaultPath,
+    userPath,
+    resourcesPath: process.resourcesPath,
+    userData: app.getPath('userData'),
+    isPackaged: app.isPackaged,
+  };
 });
 
 // ------------------------------

@@ -1,0 +1,135 @@
+{
+    "deviceId": "831849af-a730-4378-b0bf-e228de273205",
+    "deviceNumber": "00021",
+    "hardwareSerialNumber": "410113",
+    "deviceTypeId": {
+        "value": 11,
+        "label": "Gate"
+    },
+    "creationDateTime": "2021-11-05T15:47:45.013393+07:00",
+    "lastModificationDateTime": "2025-06-25T08:22:30.494604109+07:00",
+    "deviceStatus": {
+        "value": "IN_OPERATION",
+        "label": "In Operation"
+    },
+    "deviceStatusHistory": [
+        {
+            "date": "2021-11-05T15:47:45.013393+07:00",
+            "status": {
+                "value": "IN_OPERATION",
+                "label": "In Operation"
+            }
+        },
+        {
+            "date": "2025-06-25T08:13:27.491065656+07:00",
+            "status": {
+                "value": "OUT_OF_OPERATION",
+                "label": "Out of Operation"
+            },
+            "realm": "backoffice",
+            "clientId": "thales"
+        },
+        {
+            "date": "2025-06-25T08:13:44.571927822+07:00",
+            "status": {
+                "value": "IN_OPERATION",
+                "label": "In Operation"
+            },
+            "realm": "backoffice",
+            "clientId": "thales"
+        },
+        {
+            "date": "2025-06-25T08:22:26.099644869+07:00",
+            "status": {
+                "value": "OUT_OF_OPERATION",
+                "label": "Out of Operation"
+            },
+            "realm": "backoffice",
+            "clientId": "thales"
+        },
+        {
+            "date": "2025-06-25T08:22:30.494604109+07:00",
+            "status": {
+                "value": "IN_OPERATION",
+                "label": "In Operation"
+            },
+            "realm": "backoffice",
+            "clientId": "thales"
+        }
+    ],
+    "authenticationMode": {
+        "value": "USERNAME_PASSWORD",
+        "label": "Username/Password"
+    },
+    "deviceName": "SAM_Entry_01",
+    "farePointId": {
+        "value": 22,
+        "label": "Sam Yan"
+    },
+    "stopPointId": {
+        "value": 55,
+        "label": "Sam Yan North"
+    },
+    "businessEntityId": {
+        "value": "4",
+        "label": "MRTA"
+    },
+    "deviceConfigurationItems": [
+        {
+            "confItemType": "cardIssuerDenyList",
+            "identifierVersion": "DLM-JOB: 2022-04-01T04:30:00.801218Z",
+            "applicableDate": "2022-04-01T04:30:01.122391Z",
+            "status": "CURRENT"
+        },
+        {
+            "confItemType": "emvSystemParameters",
+            "identifierVersion": "emvSytemParameters_DebitTest_Threshould 400-2",
+            "applicableDate": "2025-06-04T05:57:06.741431429Z",
+            "status": "CURRENT"
+        },
+        {
+            "confItemType": "paymentGatewayDenyList",
+            "identifierVersion": "57441",
+            "applicableDate": "2024-12-04T03:01:00.155979718Z",
+            "status": "CURRENT"
+        },
+        {
+            "confItemType": "paymentGatewayDenyListFlatBuffers",
+            "identifierVersion": "57403",
+            "applicableDate": "2025-08-01T03:10:00.514135196Z",
+            "status": "CURRENT"
+        }
+    ],
+    "tags": [],
+    "deviceSamList": [
+        {
+            "deviceSamId": "00000095",
+            "deviceSamType": {
+                "value": "BANKING",
+                "label": "BANKING"
+            },
+            "deviceSamStatus": {
+                "value": "VALID",
+                "label": "Valid"
+            },
+            "ksn": 18251
+        }
+    ],
+    "_links": {
+        "dem:device.configuration.download.post": {
+            "href": "https://services-test.mangmoomemv.com/dem/devices/831849af-a730-4378-b0bf-e228de273205/configuration/download"
+        },
+        "dem:device.configuration.items.upload.post": {
+            "href": "https://services-test.mangmoomemv.com/dem/devices/831849af-a730-4378-b0bf-e228de273205/configurationItems/upload"
+        },
+        "dem:device.configuration.upload.post": {
+            "href": "https://services-test.mangmoomemv.com/dem/devices/831849af-a730-4378-b0bf-e228de273205/configuration/upload"
+        },
+        "dem:device.missing.configuration.download.post": {
+            "href": "https://services-test.mangmoomemv.com/dem/devices/831849af-a730-4378-b0bf-e228de273205/missingConfiguration/download"
+        },
+        "self": {
+            "href": "https://services-test.mangmoomemv.com/dem/devices/831849af-a730-4378-b0bf-e228de273205"
+        }
+    }
+}

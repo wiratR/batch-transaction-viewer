@@ -1,0 +1,33 @@
+{
+    "farePointId": 22,
+    "dataConfigurationEntries": [
+        {
+            "confItemType": "paymentGatewayDenyListFlatBuffers",
+            "hash": "027cbbb0ffd0b90240a46f44e6e676ab626508229d9fa4ac9d461894da4bcee0",
+            "signature": "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",
+            "applicableDate": "2025-09-12T17:10:04.954283685Z",
+            "publishingDate": "2025-09-12T17:10:04.956812819Z",
+            "identifierVersion": "61065",
+            "origin": "external",
+            "_links": {
+                "dem:device.configuration.get": {
+                    "href": "https://services.preprod-mangmoom.com/cysl/denyLists/flatBuffers/584f8a21-7f52-4ebe-ae3a-09f38dd6ecc3"
+                }
+            }
+        }
+    ],
+    "_links": {
+        "dem:device.configuration.items.upload.post": {
+            "href": "https://services-test.mangmoomemv.com/dem/devices/831849af-a730-4378-b0bf-e228de273205/configurationItems/upload"
+        },
+        "dem:device.configuration.upload.post": {
+            "href": "https://services-test.mangmoomemv.com/dem/devices/831849af-a730-4378-b0bf-e228de273205/configuration/upload"
+        },
+        "dem:device.get": {
+            "href": "https://services-test.mangmoomemv.com/dem/devices/831849af-a730-4378-b0bf-e228de273205"
+        },
+        "self": {
+            "href": "https://services-test.mangmoomemv.com/dem/devices/831849af-a730-4378-b0bf-e228de273205/configuration/download"
+        }
+    }
+}

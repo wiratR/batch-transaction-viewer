@@ -18,3 +18,7 @@ npm run dist
 ## Tips
 - Drag & drop an `.xml` file into the window, or click **📂 Open XML**.
 - Use the search box to filter by dotted path (e.g., `BatchHeader.deviceId`).
+
+```bash
+mv ./config/default.json /Users/wrung/Library/Application\ Support/batch-transaction-viewer/config.json
+```
